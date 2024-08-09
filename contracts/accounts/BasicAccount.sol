@@ -12,14 +12,20 @@ contract BasicAccount is IAccount {
         _;
     }
 
+    // Step 1: Do I want to execute the transaction based on my logic set here.
     function validateTransaction(
         bytes32 _txHash,
         bytes32 _suggestedSignedHash,
         Transaction calldata _transaction
     ) external payable onlyBootloader returns (bytes4 magic) {
+        // One mandatory rule is that we increment the nonce
+
+        // Return the magic value to indicate that the transaction is valid.
         magic = ACCOUNT_VALIDATION_SUCCESS_MAGIC;
     }
 
+    // Step 2: If I want to execute it, let's pay the fee to the bootloader first.
+    // Note: We could alternatively prepareForPaymaster and have someone else cover the fee.
     function payForTransaction(
         bytes32 _txHash,
         bytes32 _suggestedSignedHash,
@@ -29,6 +35,7 @@ contract BasicAccount is IAccount {
         require(success, "Failed to pay the fee to the operator");
     }
 
+    // Step 3: Once we have paid the fee to the bootloader, the transaction is executed.
     function executeTransaction(
         bytes32 _txHash,
         bytes32 _suggestedSignedHash,
@@ -38,16 +45,11 @@ contract BasicAccount is IAccount {
         (bool success, ) = to.call{value: _transaction.value}(
             _transaction.data
         );
+
         require(success, "Failed to execute the transaction");
     }
 
-    function executeTransactionFromOutside(
-        Transaction calldata _transaction
-    ) external payable onlyBootloader {
-        bool success = _transaction.payToTheBootloader();
-        require(success, "Failed to pay the fee to the operator");
-    }
-
+    // This will be called instead of payForTransaction (step 2) if the transaction has a paymaster.
     function prepareForPaymaster(
         bytes32 _txHash,
         bytes32 _possibleSignedHash,
@@ -55,6 +57,11 @@ contract BasicAccount is IAccount {
     ) external payable onlyBootloader {
         _transaction.processPaymasterInput();
     }
+
+    // This is related to L1 -> L2 communication. We can skip it for now.
+    function executeTransactionFromOutside(
+        Transaction calldata _transaction
+    ) external payable onlyBootloader {}
 
     fallback() external {
         assert(msg.sender != BOOTLOADER_FORMAL_ADDRESS);
