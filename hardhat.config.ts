@@ -8,7 +8,6 @@ const config: HardhatUserConfig = {
       url: "https://api.testnet.abs.xyz",
       ethNetwork: "sepolia",
       zksync: true,
-      verifyURL: "https://explorer.testnet.abs.xyz/contracts/verify",
     },
     dockerizedNode: {
       url: "http://localhost:3050",
