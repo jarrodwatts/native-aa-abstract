@@ -19,8 +19,8 @@ contract BasicAccount is IAccount {
 
     // Step 1: Do you want to execute the transaction based on the logic set here?
     function validateTransaction(
-        bytes32 _txHash,
-        bytes32 _suggestedSignedHash,
+        bytes32,
+        bytes32,
         Transaction calldata _transaction
     ) external payable onlyBootloader returns (bytes4 magic) {
         // The only mandatory rule is that we increment the nonce
@@ -43,8 +43,8 @@ contract BasicAccount is IAccount {
     // Step 2: If you want to execute it, pay the fee to the bootloader first.
     // Note: Alternatively, prepareForPaymaster could be called and have someone else cover the fee.
     function payForTransaction(
-        bytes32 _txHash,
-        bytes32 _suggestedSignedHash,
+        bytes32,
+        bytes32,
         Transaction calldata _transaction
     ) external payable onlyBootloader {
         bool success = _transaction.payToTheBootloader();
@@ -53,8 +53,8 @@ contract BasicAccount is IAccount {
 
     // Step 3: Once you have paid the fee to the bootloader, the transaction is executed.
     function executeTransaction(
-        bytes32 _txHash,
-        bytes32 _suggestedSignedHash,
+        bytes32,
+        bytes32,
         Transaction calldata _transaction
     ) external payable onlyBootloader {
         address to = address(uint160(_transaction.to));
@@ -67,8 +67,8 @@ contract BasicAccount is IAccount {
 
     // This will be called instead of payForTransaction (step 2) if the transaction has a paymaster.
     function prepareForPaymaster(
-        bytes32 _txHash,
-        bytes32 _possibleSignedHash,
+        bytes32,
+        bytes32,
         Transaction calldata _transaction
     ) external payable onlyBootloader {
         _transaction.processPaymasterInput();
