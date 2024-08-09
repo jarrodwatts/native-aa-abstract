@@ -5,5 +5,5 @@ import { deployContract } from "./utils";
 // as well as verify it on Block Explorer if possible for the network
 export default async function () {
   const contractArtifactName = "BasicAccount";
-  await deployContract(contractArtifactName);
+  await deployContract(contractArtifactName, "createAccount");
 }
