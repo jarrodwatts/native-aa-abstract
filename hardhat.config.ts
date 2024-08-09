@@ -27,7 +27,7 @@ const config: HardhatUserConfig = {
   zksolc: {
     version: "latest",
     settings: {
-      isSystem: true,
+      enableEraVMExtensions: true,
       // find all available options in the official documentation
       // https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-solc.html#configuration
     },
