@@ -1,6 +1,7 @@
 import { getBytes, VoidSigner, ZeroAddress } from "ethers";
 import { getProvider, LOCAL_RICH_WALLETS } from "./utils";
 import { serializeEip712 } from "zksync-ethers/build/utils";
+import loadFundsToAccount from "./loadFundsToAccount";
 
 // Address of the contract to interact with
 const CONTRACT_ADDRESS = "0xb4104CFeaDa272629F7Af44336a1dfa0b8dC4b30";
@@ -22,14 +23,11 @@ export default async function () {
   // Here we basically just create a transaction object that we want to send.
   // We just need it for stuff like gas estimation, nonce calculation, etc.
   const transactionGenerator = new VoidSigner(LOCAL_RICH_WALLETS[0].address, getProvider());
-
-  console.log("Transaction generator:", transactionGenerator);
-
   const transactionFields = await transactionGenerator.populateTransaction({
     to: LOCAL_RICH_WALLETS[1].address, // As an example, let's send money to the burn address
   })
-
-  console.log("Transaction fields:", transactionFields);
+  // Also just load some funds to the smart account so it can pay for gas fees
+  await loadFundsToAccount(CONTRACT_ADDRESS);
 
   const serializedTx = serializeEip712({
     ...transactionFields,
@@ -39,8 +37,6 @@ export default async function () {
       // paymasterParams
     },
   })
-
-  console.log("Serialized transaction:", serializedTx);
 
   const sentTx = await getProvider().broadcastTransaction(serializedTx);
   console.log("Transaction sent:", sentTx);
