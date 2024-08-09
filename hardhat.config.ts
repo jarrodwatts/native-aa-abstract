@@ -2,7 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@matterlabs/hardhat-zksync";
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "abstractTestnet",
+  defaultNetwork: "inMemoryNode",
   networks: {
     abstractTestnet: {
       url: "https://api.testnet.abs.xyz",
