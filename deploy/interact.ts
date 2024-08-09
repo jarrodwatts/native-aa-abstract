@@ -3,7 +3,7 @@ import { getWallet } from "./utils";
 import { ethers } from "ethers";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "";
+const CONTRACT_ADDRESS = "0x8b6E8186dE74fe0128C0a6a3B2733c1365f4c9e2";
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!";
 
 // An example of a script to interact with the contract
@@ -25,7 +25,7 @@ export default async function () {
   console.log(`Current message is: ${response}`);
 
   // Run contract write function
-  const transaction = await contract.setGreeting("Hello people!");
+  const transaction = await contract.setGreeting("Hello chat!");
   console.log(`Transaction hash of setting new message: ${transaction.hash}`);
 
   // Wait until transaction is processed
