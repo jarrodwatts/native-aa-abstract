@@ -1,9 +1,10 @@
 import * as hre from "hardhat";
-import { getWallet } from "./utils";
 import { ethers } from "ethers";
+import { utils, Provider } from "zksync-ethers";
+import { getProvider } from "./utils";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "0x8b6E8186dE74fe0128C0a6a3B2733c1365f4c9e2";
+const CONTRACT_ADDRESS = "0x4da8b63F2Ce2331065E9EE1ED79Fe157B2Bd3286";
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!";
 
 // An example of a script to interact with the contract
@@ -11,26 +12,20 @@ export default async function () {
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`);
 
   // Load compiled contract info
-  const contractArtifact = await hre.artifacts.readArtifact("Greeter");
+  const contractArtifact = await hre.artifacts.readArtifact("BasicAccount");
 
   // Initialize contract instance for interaction
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     contractArtifact.abi,
-    getWallet() // Interact with the contract on behalf of this wallet
   );
 
-  // Run contract read function
-  const response = await contract.greet();
-  console.log(`Current message is: ${response}`);
+  const provider = getProvider();
 
-  // Run contract write function
-  const transaction = await contract.setGreeting("Hello chat!");
-  console.log(`Transaction hash of setting new message: ${transaction.hash}`);
+  const serializedTx = utils.serializeEip712({
 
-  // Wait until transaction is processed
-  await transaction.wait();
 
-  // Read message after transaction
-  console.log(`The message now is: ${await contract.greet()}`);
+  })
+
+  const sentTx = await provider.send("eth_sendRawTransaction", [serializedTx]);
 }
