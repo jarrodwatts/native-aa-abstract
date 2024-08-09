@@ -10,6 +10,6 @@ export default async function (smartAccountAddress: string) {
         amount: parseEther("0.69420"),
         to: smartAccountAddress,
     })
-    console.log("Loaded funds to smart account:", tx);
+    console.log("Loaded funds to smart account:");
     return tx;
 }
