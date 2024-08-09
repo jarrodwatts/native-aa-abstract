@@ -1,10 +1,10 @@
-import { getBytes, VoidSigner, ZeroAddress } from "ethers";
+import { getBytes, VoidSigner } from "ethers";
 import { getProvider, getWallet, LOCAL_RICH_WALLETS } from "./utils";
 import { serializeEip712 } from "zksync-ethers/build/utils";
 import loadFundsToAccount from "./loadFundsToAccount";
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "0x3b87e1d183F039f38190AE43E818Bea080E79d52";
+const CONTRACT_ADDRESS = "0x22D795D50060cD5e09B08D7EBe52065dd8F43aA1";
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!";
 
 // What we're doing here is:
@@ -27,11 +27,11 @@ export default async function () {
   })
 
   // Send some funds to the smart contract account so it can pay for gas fees.
-  await loadFundsToAccount(CONTRACT_ADDRESS);
+  // await loadFundsToAccount(CONTRACT_ADDRESS);
 
   const serializedTx = serializeEip712({
     ...transactionFields, // All the fields like gasLimit, gasPrice, etc. from the above code.
-    nonce: 3,
+    nonce: 2, // You may need to change this if you're sending multiple transactions.
     from: CONTRACT_ADDRESS, // Say that the transaction comes "from" the smart contract account
     customData: {
       customSignature: getBytes("0x69") // In the real world, we would sign this with a private key. Since our contract does no validation, we can put anything.

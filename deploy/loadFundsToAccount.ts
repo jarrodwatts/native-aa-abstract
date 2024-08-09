@@ -1,5 +1,5 @@
 import { parseEther } from "ethers";
-import { deployContract, getWallet } from "./utils";
+import { getWallet } from "./utils";
 
 /**
  * Simple function to load funds to our smart account so it can pay gas fees to the bootloader.
