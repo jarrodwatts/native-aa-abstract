@@ -7,34 +7,33 @@ import loadFundsToAccount from "./loadFundsToAccount";
 const CONTRACT_ADDRESS = "0xb4104CFeaDa272629F7Af44336a1dfa0b8dC4b30";
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!";
 
-// An example of a script to interact with the contract
 // What we're doing here is:
 //  1. Creating a structured object (following EIP-712) that represents the transaction we want to send
-//  2. Broadcasting the transaction to the network. Once it reaches the network:
+//  2. Broadcasting the transaction to the network. Once it reaches the network, it:
 //     1. Gets picked up by the bootloader
-//     2. Sent to the "from" address, which is the smart contract account we deployed.
-//     3. The smart contract account run it's three functions:
+//     2. The bootloader sends it to the "from" address, which we set to the smart contract account we deployed (line 7)
+//     3. The smart contract account (BasicAccount.sol) runs it's three functions in this order:
 //        a) validateTransaction
 //        b) payForTransaction
 //        c) executeTransaction
 export default async function () {
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`);
 
-  // Here we basically just create a transaction object that we want to send.
+  // Here we are just creating a transaction object that we want to send to the network.
   // We just need it for stuff like gas estimation, nonce calculation, etc.
   const transactionGenerator = new VoidSigner(LOCAL_RICH_WALLETS[0].address, getProvider());
   const transactionFields = await transactionGenerator.populateTransaction({
-    to: LOCAL_RICH_WALLETS[1].address, // As an example, let's send money to the burn address
+    to: LOCAL_RICH_WALLETS[1].address, // As an example, let's send money to another wallet for our tx.
   })
-  // Also just load some funds to the smart account so it can pay for gas fees
+
+  // Send some funds to the smart contract account so it can pay for gas fees.
   await loadFundsToAccount(CONTRACT_ADDRESS);
 
   const serializedTx = serializeEip712({
-    ...transactionFields,
-    from: CONTRACT_ADDRESS, // say that the transaction comes "from" the smart contract account
+    ...transactionFields, // All the fields like gasLimit, gasPrice, etc. from the above code.
+    from: CONTRACT_ADDRESS, // Say that the transaction comes "from" the smart contract account
     customData: {
-      customSignature: getBytes("0x69") // In the real world, we would sign this with a private key
-      // paymasterParams
+      customSignature: getBytes("0x69") // In the real world, we would sign this with a private key. Since our contract does no validation, we can put anything.
     },
   })
 
