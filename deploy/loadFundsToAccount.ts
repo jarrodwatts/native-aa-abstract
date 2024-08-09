@@ -7,7 +7,7 @@ import { deployContract, getWallet } from "./utils";
 export default async function (smartAccountAddress: string) {
     const wallet = getWallet();
     const tx = await wallet.transfer({
-        amount: parseEther("0.69420"),
+        amount: parseEther("0.0069420"),
         to: smartAccountAddress,
     })
     console.log("Loaded funds to smart account:");
