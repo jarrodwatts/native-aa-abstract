@@ -1,6 +1,6 @@
-# zkSync Hardhat project template
+# Native Account Abstraction Demo
 
-This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
+Example of how to build a custom smart contract account and submit transactions from it on Abstract.
 
 ## Local Development
 
