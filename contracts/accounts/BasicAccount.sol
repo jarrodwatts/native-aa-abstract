@@ -3,12 +3,17 @@ pragma solidity ^0.8.0;
 
 import "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IAccount.sol";
 import {TransactionHelper} from "@matterlabs/zksync-contracts/l2/system-contracts/libraries/TransactionHelper.sol";
+import {SystemContractsCaller} from "@matterlabs/zksync-contracts/l2/system-contracts/libraries/SystemContractsCaller.sol";
+import {BOOTLOADER_FORMAL_ADDRESS, NONCE_HOLDER_SYSTEM_CONTRACT, INonceHolder} from "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 
 contract BasicAccount is IAccount {
     using TransactionHelper for *;
 
     modifier onlyBootloader() {
-        assert(msg.sender == BOOTLOADER_FORMAL_ADDRESS);
+        require(
+            msg.sender == BOOTLOADER_FORMAL_ADDRESS,
+            "Only bootloader is allowed to call this function"
+        );
         _;
     }
 
@@ -19,6 +24,15 @@ contract BasicAccount is IAccount {
         Transaction calldata _transaction
     ) external payable onlyBootloader returns (bytes4 magic) {
         // One mandatory rule is that we increment the nonce
+        SystemContractsCaller.systemCallWithPropagatedRevert(
+            uint32(gasleft()),
+            address(NONCE_HOLDER_SYSTEM_CONTRACT),
+            0,
+            abi.encodeCall(
+                INonceHolder.incrementMinNonceIfEquals,
+                (_transaction.nonce)
+            )
+        );
 
         // Return the magic value to indicate that the transaction is valid.
         magic = ACCOUNT_VALIDATION_SUCCESS_MAGIC;
