@@ -27,11 +27,11 @@ export default async function () {
   })
 
   // Send some funds to the smart contract account so it can pay for gas fees.
-  // await loadFundsToAccount(CONTRACT_ADDRESS);
+  await loadFundsToAccount(CONTRACT_ADDRESS);
 
   const serializedTx = serializeEip712({
     ...transactionFields, // All the fields like gasLimit, gasPrice, etc. from the above code.
-    nonce: 2, // You may need to change this if you're sending multiple transactions.
+    nonce: 1, // You may need to change this if you're sending multiple transactions.
     from: CONTRACT_ADDRESS, // Say that the transaction comes "from" the smart contract account
     customData: {
       customSignature: getBytes("0x69") // In the real world, we would sign this with a private key. Since our contract does no validation, we can put anything.
