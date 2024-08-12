@@ -31,7 +31,7 @@ export default async function () {
 
   const serializedTx = serializeEip712({
     ...transactionFields, // All the fields like gasLimit, gasPrice, etc. from the above code.
-    nonce: 1, // You may need to change this if you're sending multiple transactions.
+    nonce: 0, // You may need to change this if you're sending multiple transactions.
     from: CONTRACT_ADDRESS, // Say that the transaction comes "from" the smart contract account
     customData: {
       customSignature: getBytes("0x69") // In the real world, we would sign this with a private key. Since our contract does no validation, we can put anything.
@@ -39,5 +39,7 @@ export default async function () {
   })
 
   const sentTx = await getProvider().broadcastTransaction(serializedTx);
-  console.log("Transaction sent:", sentTx);
+  const resp = await sentTx.wait();
+
+  console.log("Transaction sent:", resp);
 }
